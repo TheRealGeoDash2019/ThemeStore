@@ -296,7 +296,7 @@
             Array.from(document.querySelector(`#storeContent`).childNodes).forEach(e => e.remove());
             window.themeList = await fetch("/data/themes.json").then(resp => resp.json()).catch(() => []);
             for (const theme of window.themeList) {
-                document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, null, {
+                document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, theme?.icon, {
                     src: theme?.src
                 }))
             }
@@ -306,14 +306,14 @@
                 const searchQuery = searchInput.value;
                 if (!searchQuery) {
                     for (const theme of window.themeList) {
-                        document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, null, {
+                        document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, theme?.icon, {
                             src: theme?.src
                         }))
                     }
                 } else {
                     const filteredThemes = window.themeList.filter(e => ((e?.name?.includes?.(searchQuery) || e?.description?.includes?.(searchQuery) || e?.author?.includes?.(searchQuery)) || (e?.name?.toLowerCase?.().includes?.(searchQuery.toLowerCase()) || e?.description?.toLowerCase?.().includes?.(searchQuery.toLowerCase()) || e?.author?.toLowerCase?.().includes?.(searchQuery.toLowerCase()))));
                     for (const theme of filteredThemes) {
-                        document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, null, {
+                        document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, theme?.icon, {
                             src: theme?.src
                         }))
                     }
