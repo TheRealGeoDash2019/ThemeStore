@@ -301,9 +301,9 @@
                 }))
             }
 
-            navigation.addEventListener("navigate", function(event) {
+            searchInput.addEventListener("input", function() {
                 Array.from(document.querySelector(`#storeContent`).childNodes).forEach(e => e.remove());
-                const searchQuery = new URL(event.destination.url).searchParams.get("q") || null;
+                const searchQuery = searchInput.value;
                 if (!searchQuery) {
                     for (const theme of window.themeList) {
                         document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, null, {
@@ -318,8 +318,7 @@
                         }))
                     }
                 }
-                
-            })
+            });
         })
     </script>
 </body>
