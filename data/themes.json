@@ -2,13 +2,36 @@
     {
         "name": "AMOLED",
         "author": "TheRealGeoDash2019",
+        "accent": "#101010",
         "description": "Why go dark when you can go Darker?",
         "src": "https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/AMOLED.theme.css"
     },
     {
         "name": "AMOLED v2 (Where are the Lights)",
         "author": "TheRealGeoDash2019",
+        "accent": "#050505",
         "description": "Who turned off the Lights?",
         "src": "https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/WhereAreTheLights.theme.css"
+    },
+    {
+        "name": "Purple Overflow",
+        "author": "TheRealGeoDash2019",
+        "accent": "#410066",
+        "description": "You walk into the room to find? A COMPLETELY PURPLE ROOM",
+        "src": "https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/PurpleOverflow.theme.css"
+    },
+    {
+        "name": "Crime Scene",
+        "author": "TheRealGeoDash2019",
+        "accent": "#400000",
+        "description": "Hope you aren't afraid of blood...",
+        "src": "https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/CrimeScene.theme.css"
+    },
+    {
+        "name": "Spotified",
+        "author": "TheRealGeoDash2019",
+        "accent": "#09431e",
+        "description": "If you thought that you couldn't get Spotify colors outside of the App. Man you'll be suprised...",
+        "src": "https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/CrimeScene.theme.css"
     }
 ]

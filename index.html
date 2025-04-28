@@ -7,6 +7,7 @@
     <title>Theme Store</title>
     <link rel="stylesheet" href="/assets/index.css">
     <link rel="icon" href="/assets/BetterRHLogo.png">
+    <script src="/assets/tinycolor-min.js"></script>
 </head>
 
 <body>
@@ -249,16 +250,20 @@
             </div>
         </div>
     </template>
-    <script>       
-        function generateTextIcon(initial) {
+    <script>     
+        function getSafeTextColor(input = "#000000") {
+            return ("#" + tinycolor.mostReadable(input, ["#fff", "#000"], { wcag2: {} }).toHex());
+        }
+    
+        function generateTextIcon(initial, accent = "#ffdf8c") {
             const canvas = document.createElement(`canvas`);
             canvas.width = 96;
             canvas.height = 96;
             const ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#ffdf8c";
+            ctx.fillStyle = accent;
             ctx.roundRect(0, 0, 96, 96, 10);
             ctx.fill();
-            ctx.fillStyle = "#000000";
+            ctx.fillStyle = getSafeTextColor(accent);
             ctx.font = "40px sans-serif";
             const text = initial;
             const textWidth = ctx.measureText(text);
@@ -282,7 +287,7 @@
             if (icon) {
                 cardIcon.src = icon;
             } else {
-                cardIcon.src = generateTextIcon(name.split("").find(e => e.match(/[a-z0-9]/gmi)));
+                cardIcon.src = generateTextIcon(name.split("").find(e => e.match(/[a-z0-9]/gmi)), metadata?.accent);
             };
             cardInstall.addEventListener("click", async function() {
                 console.log("Installing:", metadata?.src);
@@ -297,7 +302,8 @@
             window.themeList = await fetch("/data/themes.json").then(resp => resp.json()).catch(() => []);
             for (const theme of window.themeList) {
                 document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, theme?.icon, {
-                    src: theme?.src
+                    src: theme?.src,
+                    accent: theme?.accent
                 }))
             }
 
@@ -307,14 +313,16 @@
                 if (!searchQuery) {
                     for (const theme of window.themeList) {
                         document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, theme?.icon, {
-                            src: theme?.src
+                            src: theme?.src,
+                            accent: theme?.accent
                         }))
                     }
                 } else {
                     const filteredThemes = window.themeList.filter(e => ((e?.name?.includes?.(searchQuery) || e?.description?.includes?.(searchQuery) || e?.author?.includes?.(searchQuery)) || (e?.name?.toLowerCase?.().includes?.(searchQuery.toLowerCase()) || e?.description?.toLowerCase?.().includes?.(searchQuery.toLowerCase()) || e?.author?.toLowerCase?.().includes?.(searchQuery.toLowerCase()))));
                     for (const theme of filteredThemes) {
                         document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, theme?.icon, {
-                            src: theme?.src
+                            src: theme?.src,
+                            accent: theme?.accent
                         }))
                     }
                 }
