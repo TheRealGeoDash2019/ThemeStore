@@ -115,6 +115,15 @@
                 searchBar.classList.remove("active");
             }
         })
+
+        window.addEventListener("load", function() {
+            const searchParams = new URLSearchParams(location.search);
+            if (searchParams.has("q")) {
+                searchInput.value = searchParams.get("q");
+                searchPlaceholder.classList.add("hidden");
+                searchClear.classList.remove("hidden");
+            }
+        })
     </script>
     <script>
         const burstSandbox = function () {
@@ -161,6 +170,22 @@
             return (_ === "true" || _ === "yes" || parseInt(_) >= 1 || parseInt(_) >= "1");
         }
 
+        window.toggleTheme = function(_) {
+            if (!window["%is-hammerhead%"]) return;
+            if (!windowethToppeth) return;
+            try {
+                if (windowethToppeth.rhTheming) {
+                    windowethToppeth.rhTheming.setEnabled(_);
+                    return _;
+                } else if (windowethToppeth.toggleTheme) {
+                    windowethToppeth.toggleTheme(_);
+                    return _;
+                }
+            } catch (_) {
+            return null;
+            }
+        };
+
         window.addEventListener("themeState", ({themeState}) => {
             if (themeState) {
                 if (themeState.theme) {
@@ -191,6 +216,111 @@
         })
     </script>
     <div id="storeContent"></div>
+    <template id="theme-template">
+        <div id="card">
+            <div id="main">
+                <div id="icon-wrapper">
+                    <img id="icon" alt="Theme Icon" src="">
+                </div>
+                <div id="content">
+                    <div>
+                        <div id="name-and-version">
+                            <div id="name" role="heading">
+                                Theme Name
+                            </div>
+                            <span id="version">
+                                0.0.0
+                            </span>
+                        </div>
+                    </div>
+                    <div id="description">
+                        Script Description
+                    </div>
+                    <div id="actions">
+                        <div id="install">
+                            <svg title="Install Theme" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                                <path d="M320-120v-80H160q-33 0-56.5-23.5T80-280v-480q0-33 23.5-56.5T160-840h320v80H160v480h640v-120h80v120q0 33-23.5 56.5T800-200H640v80H320Zm360-280L480-600l56-56 104 103v-287h80v287l104-103 56 56-200 200Z"/>
+                            </svg>
+                            Install Theme
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>       
+        function generateTextIcon(initial) {
+            const canvas = document.createElement(`canvas`);
+            canvas.width = 96;
+            canvas.height = 96;
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#ffdf8c";
+            ctx.roundRect(0, 0, 96, 96, 10);
+            ctx.fill();
+            ctx.fillStyle = "#000000";
+            ctx.font = "40px sans-serif";
+            const text = initial;
+            const textWidth = ctx.measureText(text);
+            ctx.fillText(text, (canvas.width/2) - (textWidth.width/2), canvas.height / 2 + (textWidth.actualBoundingBoxAscent - textWidth.actualBoundingBoxDescent) / 2);
+            return canvas.toDataURL("png");
+        }
+
+        function makeThemeCard(name = "Unnamed Theme", description, version = "Unknown", icon, metadata = {}) {
+            const cardElement = document.querySelector(`template#theme-template`).content.cloneNode(true);
+            const cardIcon = cardElement.querySelector(`#icon-wrapper > #icon[src]`);
+            const cardName = cardElement.querySelector(`#name-and-version > #name`);
+            const cardVersion = cardElement.querySelector(`#name-and-version > #version`);
+            const cardDescription = cardElement.querySelector(`#content > #description`);
+            const cardInstall = cardElement.querySelector(`#content > #actions > #install`);
+        
+            cardName.innerText = name;
+            cardVersion.innerText = version;
+            if (description) {
+                cardDescription.innerText = description;
+            };
+            if (icon) {
+                cardIcon.src = icon;
+            } else {
+                cardIcon.src = generateTextIcon(name.split("").find(e => e.match(/[a-z0-9]/gmi)));
+            };
+            cardInstall.addEventListener("click", async function() {
+                console.log("Installing:", metadata?.src);
+                window.toggleTheme(metadata?.src);
+            })
+            return cardElement;
+        }
+    </script>
+    <script>
+        window.addEventListener("load", async function() {
+            Array.from(document.querySelector(`#storeContent`).childNodes).forEach(e => e.remove());
+            window.themeList = await fetch("/data/themes.json").then(resp => resp.json()).catch(() => []);
+            for (const theme of window.themeList) {
+                document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, null, {
+                    src: theme?.src
+                }))
+            }
+
+            navigation.addEventListener("navigate", function(event) {
+                Array.from(document.querySelector(`#storeContent`).childNodes).forEach(e => e.remove());
+                const searchQuery = new URL(event.destination.url).searchParams.get("q") || null;
+                if (!searchQuery) {
+                    for (const theme of window.themeList) {
+                        document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, null, {
+                            src: theme?.src
+                        }))
+                    }
+                } else {
+                    const filteredThemes = window.themeList.filter(e => ((e?.name?.includes?.(searchQuery) || e?.description?.includes?.(searchQuery) || e?.author?.includes?.(searchQuery)) || (e?.name?.toLowerCase?.().includes?.(searchQuery.toLowerCase()) || e?.description?.toLowerCase?.().includes?.(searchQuery.toLowerCase()) || e?.author?.toLowerCase?.().includes?.(searchQuery.toLowerCase()))));
+                    for (const theme of filteredThemes) {
+                        document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, null, {
+                            src: theme?.src
+                        }))
+                    }
+                }
+                
+            })
+        })
+    </script>
 </body>
 
 </html>

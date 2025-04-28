@@ -1,0 +1,16 @@
+[
+    {
+        "name": "AMOLED",
+        "author": "TheRealGeoDash2019",
+        "description": "Why go dark when you can go Darker?",
+        "version": "0.0.0",
+        "src": "https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/AMOLED.theme.css"
+    },
+    {
+        "name": "AMOLED v2 (Where are the Lights)",
+        "author": "TheRealGeoDash2019",
+        "description": "Who turned off the Lights?",
+        "version": "0.0.0",
+        "src": "https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/WhereAreTheLights.theme.css"
+    }
+]
