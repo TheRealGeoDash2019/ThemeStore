@@ -79,6 +79,11 @@ button {
     white-space: normal;
 }
 
+#rightContent > #rightSpacer {
+    padding-inline-end: calc(21px);
+    color: var(--browser-text-secondary-color);
+}
+
 slot[name="product-logo"] * {
     max-width: 24px;
     max-height: 24px;
