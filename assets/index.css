@@ -345,7 +345,7 @@ slot[name="product-logo"] * {
 }
 
 #name-and-version > #version {
-    color: var(--browser-text-secondary-color);
+    color: transparent;
     font-weight: 400;
 }
 
