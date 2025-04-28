@@ -81,7 +81,11 @@ button {
 
 #rightContent > #rightSpacer {
     padding-inline-end: calc(21px);
-    color: var(--browser-text-secondary-color);
+    color: var(--browser-text-secondary-color) !important;
+}
+
+#rightSpacer > a {
+    color: inherit !important;
 }
 
 slot[name="product-logo"] * {
