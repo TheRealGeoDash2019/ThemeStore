@@ -84,10 +84,6 @@ html.custom-theme [class^="browser-bar-btn"][class$="enabled"]:hover {
   background: rgba(0, 0, 0, 0.1);
 }
 
-html.custom-theme [class^="browser-bar-btn"][class$="disabled"] {
-  opacity: 0.3;
-}
-
 html.custom-theme #root [class^="browser"]:not([class^="browser-bar-btn"]):not([class^="browser-bar"]) {
   background: var(--theme-ntp-background) !important;
 }
@@ -143,7 +139,7 @@ html.custom-theme, html.custom-theme [class^="rhnewtab-oldui-container"] input {
 html.custom-theme [class^="browser-bar-btn"][class$="disabled"] {
   fill: var(--theme-tab-text);
   stroke: var(--theme-tab-text);
-  opacity: 0.8;
+  opacity: 0.2;
 }
 
 html.custom-theme [class^="rhnewtab-header"] img, html.custom-theme div[class^="browser-tab"] [class^="rhpages"] a {
