@@ -175,6 +175,6 @@ html.custom-theme [class^=chrome-tab-close]:hover {
 
 html.custom-theme div[class^=browser-tab] [class^="rhpages-"][class*=" rhnewtab-"]  {
   background-image: var(--theme-ntp-background-image) !important;
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
 }
