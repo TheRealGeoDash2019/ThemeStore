@@ -124,8 +124,8 @@ html.custom-theme [class^="addressbar-menu-item-"][style="background-color: rgba
 
 html.custom-theme [class^="addressbar"] > [class^="browser-bar-btn"] {
   background: transparent !important;
-  fill: var(--theme-frame) !important;
-  stroke: var(--theme-frame) !important;
+  fill: var(--theme-tab-text) !important;
+  stroke: var(--theme-tab-text) !important;
 }
 
 html.custom-theme [class^="browser-bar"] {
