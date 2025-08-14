@@ -8,6 +8,7 @@ html.custom-theme {
     --theme-frame: #2b2b2b;
     --theme-toolbar: #3c3c3c;
     --theme-ntp-background: #2b2b2b;
+    --theme-ntp-background-image: url();
     --theme-tab-text: #e3e3e3;
     --theme-tab-background-text: #c8c8c8;
     --theme-ntp-text: #c8c8c8;
@@ -170,4 +171,10 @@ html.custom-theme div[class^="rhnewtab-version-container"] {
 html.custom-theme [class^=chrome-tab-close]:hover {
   background-color: transparent !important;
   filter: invert(1);
+}
+
+html.custom-theme div[class^=browser-tab] [class^="rhpages-"][class*=" rhnewtab-"]  {
+  background-image: var(--theme-ntp-background-image) !important;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
