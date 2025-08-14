@@ -84,6 +84,10 @@ html.custom-theme [class^="browser-bar-btn"][class$="enabled"]:hover {
   background: rgba(0, 0, 0, 0.1);
 }
 
+html.custom-theme [class^="browser-bar-btn"][class$="disabled"] {
+  opacity: 0.3;
+}
+
 html.custom-theme #root [class^="browser"]:not([class^="browser-bar-btn"]):not([class^="browser-bar"]) {
   background: var(--theme-ntp-background) !important;
 }
