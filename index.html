@@ -299,10 +299,11 @@
     <script>
         window.addEventListener("load", async function() {
             Array.from(document.querySelector(`#storeContent`).childNodes).forEach(e => e.remove());
-            window.themeList = await fetch("/data/themes.json").then(resp => resp.json()).catch(() => []);
+            // Fetch the Theme catalogue.
+            window.themeList = await fetch(`https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/_index.json`).then(resp => resp.json().then(x => x.Themes).catch(() => [])).catch(() => []);
             for (const theme of window.themeList) {
                 document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, theme?.icon, {
-                    src: theme?.src,
+                    src: theme?.url,
                     accent: theme?.accent
                 }))
             }
@@ -313,7 +314,7 @@
                 if (!searchQuery) {
                     for (const theme of window.themeList) {
                         document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, theme?.icon, {
-                            src: theme?.src,
+                            src: theme?.url,
                             accent: theme?.accent
                         }))
                     }
@@ -321,7 +322,7 @@
                     const filteredThemes = window.themeList.filter(e => ((e?.name?.includes?.(searchQuery) || e?.description?.includes?.(searchQuery) || e?.author?.includes?.(searchQuery)) || (e?.name?.toLowerCase?.().includes?.(searchQuery.toLowerCase()) || e?.description?.toLowerCase?.().includes?.(searchQuery.toLowerCase()) || e?.author?.toLowerCase?.().includes?.(searchQuery.toLowerCase()))));
                     for (const theme of filteredThemes) {
                         document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, theme?.icon, {
-                            src: theme?.src,
+                            src: theme?.url,
                             accent: theme?.accent
                         }))
                     }
