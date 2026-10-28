@@ -5,133 +5,794 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Theme Store</title>
-    <link rel="stylesheet" href="/assets/index.css">
-    <link rel="icon" href="/assets/BetterRHLogo.png">
-    <script src="/assets/tinycolor-min.js"></script>
+    <link rel="stylesheet" href="./assets/index.css">
+    <link rel="icon" href="./assets/BetterRHLogo.png">
+    <script src="./assets/tinycolor-min.js"></script>
 </head>
 
 <body>
-    <div id="toolbar" autofocus="" role="banner" narrow-threshold="980">
+    <!-- Shared SVG Symbol Sprite -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="hidden" hidden aria-hidden="true" width="0" height="0" style="display: none;">
+        <symbol id="ts-icon-verified" viewBox="0 -960 960 960">
+            <path fill="currentColor" d="m344-60-76-128-144-32 14-148-98-112 98-112-14-148 144-32 76-128 136 58 136-58 76 128 144 32-14 148 98 112-98 112 14 148-144 32-76 128-136-58-136 58Zm94-278 226-226-56-58-170 170-86-84-56 56 142 142Z"/>
+        </symbol>
+    </svg>
+
+    <header id="toolbar" role="banner">
         <div id="leftContent">
             <div id="leftSpacer">
-                <slot name="product-logo">
+                <a id="brandHomeLink" href="?" title="Back to all themes">
                     <picture>
-                        <source media="(prefers-color-scheme: dark)" srcset="/assets/Logo.svg">
-                        <img id="product-logo" src="/assets/Logo.svg" role="presentation">
+                        <source media="(prefers-color-scheme: dark)" srcset="./assets/Logo.svg">
+                        <img id="product-logo" src="./assets/Logo.svg" alt="">
                     </picture>
-                </slot>
-                <h1>Themes</h1>
+                    <h1>Themes</h1>
+                </a>
             </div>
         </div>
+
         <div id="centeredContent">
-            <div id="search" label="Search settings" clear-label="Clear search" autofocus="" icon-override=""
-                input-aria-description="">
-                <div id="background"></div>
-                <div id="stateBackground"></div>
+            <div id="search" role="search">
                 <div id="content">
-                    <div id="icon-button" title="Search themes" tabindex="-1" aria-hidden="true" role="button"
-                        aria-disabled="false">
-                        <div id="icon">
-                            <div id="maskedImage"></div>
-                            <div id="rhicon">
-                                <svg id="baseSvg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"
-                                    focusable="false"
-                                    style="pointer-events: none; display: block; width: 100%; height: 100%;"
-                                    viewBox="0 0 24 24" class="cr-iconset-svg-icon_" role="none">
-                                    <g>
-                                        <path
-                                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
-                                        </path>
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
+                    <div class="search-leading-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                        </svg>
                     </div>
                     <div id="searchTerm">
-                        <label id="prompt" for="searchInput" aria-hidden="true">
-                            Search themes
-                        </label>
-                        <input id="searchInput" aria-labelledby="prompt" autocapitalize="off" autocomplete="off"
-                            type="search" spellcheck="false" aria-description="" autofocus="">
+                        <label id="prompt" for="searchInput">Search themes</label>
+                        <input id="searchInput" autocapitalize="off" autocomplete="off" type="search"
+                            spellcheck="false" placeholder="Search themes, authors, or styles">
                     </div>
-                    <div id="icon-button" title="Clear search" role="button" tabindex="0" aria-disabled="false" class="searchClear hidden">
-                        <div id="icon">
-                            <div id="maskedImage"></div>
-                            <div id="rhicon">
-                                <svg id="baseSvg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"
-                                    focusable="false"
-                                    style="pointer-events: none; display: block; width: 100%; height: 100%;"
-                                    viewBox="0 0 24 24" class="cr-iconset-svg-icon_" role="none">
-                                    <g>
-                                        <path
-                                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z">
-                                        </path>
-                                    </g>
+                    <kbd id="searchShortcutHint" aria-hidden="true" title="Press / to search">/</kbd>
+                    <button id="searchClearBtn" type="button" title="Clear search" aria-label="Clear search"
+                        class="cr-icon-btn searchClear hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                            <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="rightContent">
+            <div id="rightSpacer">
+                <button id="previewBannerBtn" type="button" class="preview-status-pill hidden"
+                    title="Exit live store preview">
+                    <span class="preview-dot" aria-hidden="true"></span>
+                    <span id="previewBannerText">Previewing</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                        <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                </button>
+                <a id="openEditorBtn" class="toolbar-link" href="?editor=1"
+                    title="Open the native Rammerhead Theme Editor">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="16" height="16" aria-hidden="true">
+                        <path fill="currentColor" d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 32.5-156t88-127Q256-817 330-848.5T488-880q80 0 151 27.5t124.5 76q53.5 48.5 85 115T880-518q0 115-70 176.5T640-280h-74q-9 0-12.5 5t-3.5 11q0 12 15 34.5t15 51.5q0 50-27.5 74T480-80Zm0-400Zm-220 40q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm120-160q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm200 0q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm120 160q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17ZM480-160q9 0 14.5-5t5.5-13q0-14-15-33t-15-57q0-42 29-67t71-25h70q66 0 113-38.5T800-518q0-121-92.5-201.5T488-800q-136 0-232 93t-96 227q0 133 93.5 226.5T480-160Z"/>
+                    </svg>
+                    <span>Theme Editor</span>
+                </a>
+                <a class="toolbar-link" href="https://github.com/TheRealGeoDash2019/ThemeStore" target="_blank"
+                    rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                        <path fill="currentColor" d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/>
+                    </svg>
+                    <span>View Source</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main id="mainViewport">
+        <!-- Catalogue / Chrome Extensions Grid View -->
+        <section id="catalogueView" aria-labelledby="catalogue-heading">
+            <div class="catalogue-container">
+                <div id="subToolbar">
+                    <div class="subtoolbar-left">
+                        <h2 id="catalogue-heading" tabindex="-1">All themes</h2>
+                        <span id="themeCountBadge" class="count-pill" aria-live="polite">0</span>
+                        <button id="activeAuthorChip" type="button" class="author-filter-chip hidden"
+                            title="Clear author filter">
+                            <span id="activeAuthorChipLabel"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                                <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="subtoolbar-right">
+                        <div class="filter-chips" role="group" aria-label="Filter themes by tone">
+                            <button type="button" class="cr-chip active" data-filter="all" aria-pressed="true">All</button>
+                            <button id="verifiedFilterChip" type="button" class="cr-chip hidden" data-filter="verified" aria-pressed="false">Verified</button>
+                            <button type="button" class="cr-chip" data-filter="dark" aria-pressed="false">Dark</button>
+                            <button type="button" class="cr-chip" data-filter="light" aria-pressed="false">Light</button>
+                            <button type="button" class="cr-chip" data-filter="amoled" aria-pressed="false">AMOLED</button>
+                            <button type="button" class="cr-chip" data-filter="colorful" aria-pressed="false">Colorful</button>
+                        </div>
+                        <div class="sort-control">
+                            <label for="sortSelect" class="sr-only">Sort themes</label>
+                            <select id="sortSelect" class="cr-select">
+                                <option value="featured">Sort: Featured</option>
+                                <option value="name">Sort: Name (A–Z)</option>
+                                <option value="author">Sort: Author</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="loadingState" class="state-panel" role="status" aria-live="polite">
+                    <img src="./assets/throbber.svg" alt="" width="24" height="24">
+                    <p>Loading theme catalogue…</p>
+                </div>
+
+                <div id="emptyState" class="state-panel hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="44" height="44" aria-hidden="true">
+                        <path fill="currentColor" d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
+                    </svg>
+                    <h3>No matching themes found</h3>
+                    <p>Try a different search term or reset your active filters.</p>
+                    <button id="resetFiltersBtn" type="button" class="cr-btn cr-btn--outline">Clear filters</button>
+                </div>
+
+                <div id="storeContent" aria-live="polite"></div>
+            </div>
+        </section>
+
+        <!-- App Profile / Extension Detail View -->
+        <section id="profileView" class="hidden" aria-labelledby="profile-heading">
+            <div class="profile-subbar">
+                <div class="profile-subbar-inner">
+                    <div class="profile-nav-left">
+                        <button id="profileBackBtn" type="button" class="cr-icon-btn back-btn"
+                            aria-label="Back to all themes" title="Back to all themes">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                                <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                            </svg>
+                        </button>
+                        <nav class="profile-breadcrumbs" aria-label="Breadcrumb">
+                            <a id="breadcrumbRootLink" href="?">Themes</a>
+                            <span class="breadcrumb-sep" aria-hidden="true">/</span>
+                            <span id="breadcrumbCurrent" aria-current="page">Theme</span>
+                        </nav>
+                    </div>
+                    <div class="profile-nav-right">
+                        <button id="prevThemeBtn" type="button" class="cr-icon-btn" title="Previous theme"
+                            aria-label="Previous theme">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                                <path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            </svg>
+                        </button>
+                        <button id="nextThemeBtn" type="button" class="cr-icon-btn" title="Next theme"
+                            aria-label="Next theme">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                                <path fill="currentColor" d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-container">
+                <!-- App Profile Hero Sheet -->
+                <div id="profileHeroCard" class="cr-sheet profile-hero-card">
+                    <div id="profileBanner" class="profile-banner" aria-hidden="true">
+                        <div class="profile-banner-pattern"></div>
+                    </div>
+
+                    <div class="profile-hero-body">
+                        <div class="profile-identity">
+                            <div class="profile-icon-wrap">
+                                <img id="profileIcon" src="" alt="" width="76" height="76">
+                            </div>
+                            <div class="profile-title-block">
+                                <div class="profile-heading-line">
+                                    <h2 id="profile-heading" tabindex="-1">Theme Name</h2>
+                                    <span id="profileVerifiedBadge" class="verified-badge verified-badge--lg hidden"
+                                        role="img" aria-label="Verified theme" title="Verified theme">
+                                        <svg width="20" height="20" aria-hidden="true" focusable="false">
+                                            <use href="#ts-icon-verified"></use>
+                                        </svg>
+                                    </span>
+                                    <span id="profileStatusBadge" class="status-badge hidden">Installed</span>
+                                </div>
+                                <div class="profile-byline">
+                                    <button id="profileAuthorBtn" type="button" class="author-link-btn"
+                                        title="View all themes by this author">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                                            <path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                        </svg>
+                                        <span id="profileAuthorText">Author</span>
+                                    </button>
+                                    <span class="meta-dot" aria-hidden="true">•</span>
+                                    <span id="profileToneBadge" class="meta-pill">Dark Theme</span>
+                                    <span class="meta-dot" aria-hidden="true">•</span>
+                                    <span id="profileVersionPill" class="meta-version">v0.0.1</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="profile-cta-group">
+                            <button id="profileCustomizeBtn" type="button" class="cr-btn cr-btn--outline"
+                                title="Open this theme as a template in the native Theme Editor">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="16" height="16" aria-hidden="true">
+                                    <path fill="currentColor" d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 32.5-156t88-127Q256-817 330-848.5T488-880q80 0 151 27.5t124.5 76q53.5 48.5 85 115T880-518q0 115-70 176.5T640-280h-74q-9 0-12.5 5t-3.5 11q0 12 15 34.5t15 51.5q0 50-27.5 74T480-80Zm0-400Zm-220 40q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm120-160q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm200 0q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm120 160q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17ZM480-160q9 0 14.5-5t5.5-13q0-14-15-33t-15-57q0-42 29-67t71-25h70q66 0 113-38.5T800-518q0-121-92.5-201.5T488-800q-136 0-232 93t-96 227q0 133 93.5 226.5T480-160Z"/>
                                 </svg>
+                                <span>Customize</span>
+                            </button>
+                            <button id="profilePreviewBtn" type="button" class="cr-btn cr-btn--outline" aria-pressed="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                    <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                </svg>
+                                <span id="profilePreviewBtnLabel">Try Preview</span>
+                            </button>
+                            <button id="profileInstallBtn" type="button" class="cr-btn cr-btn--filled">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor" aria-hidden="true">
+                                    <path d="M320-120v-80H160q-33 0-56.5-23.5T80-280v-480q0-33 23.5-56.5T160-840h320v80H160v480h640v-120h80v120q0 33-23.5 56.5T800-200H640v80H320Zm360-280L480-600l56-56 104 103v-287h80v287l104-103 56 56-200 200Z"/>
+                                </svg>
+                                <span id="profileInstallBtnLabel">Install Theme</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- App Store Style Metrics Ribbon -->
+                    <dl class="profile-metrics-ribbon">
+                        <div class="metric-cell">
+                            <dt>Publisher</dt>
+                            <dd id="metricAuthor">—</dd>
+                        </div>
+                        <div class="metric-cell">
+                            <dt>Version</dt>
+                            <dd id="metricVersion">—</dd>
+                        </div>
+                        <div class="metric-cell">
+                            <dt>Appearance</dt>
+                            <dd id="metricMode">—</dd>
+                        </div>
+                        <div class="metric-cell">
+                            <dt>Contrast</dt>
+                            <dd id="metricContrast">—</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <!-- Interactive Browser Mockup Showcase -->
+                <div class="cr-sheet profile-showcase-card">
+                    <div class="sheet-section-header">
+                        <div>
+                            <h3>Interactive Preview</h3>
+                            <p class="sheet-subtitle">Live simulation of how this theme styles Better Rammerhead tabs, toolbar, and pages</p>
+                        </div>
+                        <div class="preview-tab-switcher" role="tablist" aria-label="Preview screen">
+                            <button type="button" role="tab" class="cr-chip active" data-mockup-tab="newtab" aria-selected="true">New Tab</button>
+                            <button type="button" role="tab" class="cr-chip" data-mockup-tab="store" aria-selected="false">Store UI</button>
+                        </div>
+                    </div>
+
+                    <div id="browserMockup" class="browser-mockup">
+                        <!-- Simulated Chrome / Rammerhead Tab Strip -->
+                        <div class="mockup-tabstrip">
+                            <div class="mockup-window-dots" aria-hidden="true">
+                                <span></span><span></span><span></span>
+                            </div>
+                            <div class="mockup-tabs">
+                                <button type="button" class="mockup-tab active" data-mockup-tab="newtab">
+                                    <img class="mockup-tab-favicon" src="./assets/BetterRHLogo.png" alt="">
+                                    <span class="mockup-tab-title">New Tab</span>
+                                    <span class="mockup-tab-close" aria-hidden="true">×</span>
+                                </button>
+                                <span class="mockup-tab-divider" aria-hidden="true"></span>
+                                <button type="button" class="mockup-tab" data-mockup-tab="store">
+                                    <img class="mockup-tab-favicon" src="./assets/Logo.svg" alt="">
+                                    <span class="mockup-tab-title">Theme Store</span>
+                                    <span class="mockup-tab-close" aria-hidden="true">×</span>
+                                </button>
+                                <span class="mockup-newtab-plus" aria-hidden="true">+</span>
+                            </div>
+                        </div>
+
+                        <!-- Simulated Navigation & Address Bar -->
+                        <div class="mockup-navbar">
+                            <div class="mockup-nav-icons" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                                <svg viewBox="0 0 24 24" width="16" height="16" class="muted"><path fill="currentColor" d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                            </div>
+                            <div class="mockup-omnibox">
+                                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                                <span id="mockupUrlText">rh://newtab</span>
+                            </div>
+                            <div class="mockup-nav-icons right" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>
+                                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                            </div>
+                        </div>
+
+                        <!-- Simulated Viewport Page 1: Better Rammerhead New Tab -->
+                        <div id="mockupPageNewtab" class="mockup-viewport">
+                            <div class="mockup-ntp-brand">
+                                <img id="mockupRhLogo" src="./assets/BetterRHLogo.png" alt="Better Rammerhead logo preview">
+                                <span class="mockup-ntp-title">Better Rammerhead</span>
+                            </div>
+                            <div class="mockup-ntp-search">
+                                <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                                <span>Search the web freely or enter a URL…</span>
+                            </div>
+                            <div class="mockup-ntp-shortcuts" aria-hidden="true">
+                                <div class="mockup-shortcut"><span>rh://settings</span></div>
+                                <div class="mockup-shortcut active"><span>rh://themes</span></div>
+                                <div class="mockup-shortcut"><span>rh://extensions</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Simulated Viewport Page 2: Mini Store UI -->
+                        <div id="mockupPageStore" class="mockup-viewport mockup-store-scene hidden">
+                            <div class="mockup-mini-toolbar">
+                                <span class="mockup-mini-title">Themes</span>
+                                <span class="mockup-mini-pill">Search themes</span>
+                            </div>
+                            <div class="mockup-mini-grid">
+                                <div class="mockup-mini-card">
+                                    <span id="mockupMiniBadge1" class="mockup-mini-avatar">A</span>
+                                    <div class="mockup-mini-lines">
+                                        <span class="line-strong"></span>
+                                        <span class="line-soft"></span>
+                                    </div>
+                                </div>
+                                <div class="mockup-mini-card">
+                                    <span id="mockupMiniBadge2" class="mockup-mini-avatar">B</span>
+                                    <div class="mockup-mini-lines">
+                                        <span class="line-strong"></span>
+                                        <span class="line-soft"></span>
+                                    </div>
+                                </div>
+                                <div class="mockup-mini-card">
+                                    <span id="mockupMiniBadge3" class="mockup-mini-avatar">C</span>
+                                    <div class="mockup-mini-lines">
+                                        <span class="line-strong"></span>
+                                        <span class="line-soft"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Chrome Extensions-style Detail Sheet -->
+                <div class="cr-sheet profile-details-card">
+                    <div class="cr-detail-row">
+                        <div class="cr-detail-label">Overview</div>
+                        <p id="profileDescription" class="profile-description"></p>
+                    </div>
+
+                    <div class="cr-detail-row">
+                        <div class="cr-detail-header-inline">
+                            <div>
+                                <div class="cr-detail-label">Theme Color Palette</div>
+                                <div class="cr-detail-sublabel">Click any token swatch to copy its CSS color value</div>
+                            </div>
+                        </div>
+                        <div id="profilePaletteGrid" class="palette-grid"></div>
+                    </div>
+
+                    <div class="cr-detail-row cr-detail-split">
+                        <div>
+                            <div class="cr-detail-label">Stylesheet URL</div>
+                            <code id="profileSourceUrl" class="cr-code-inline"></code>
+                        </div>
+                        <div class="cr-row-actions">
+                            <button id="copyUrlBtn" type="button" class="cr-btn cr-btn--outline">Copy URL</button>
+                            <button id="downloadCssBtn" type="button" class="cr-btn cr-btn--outline">Download .css</button>
+                        </div>
+                    </div>
+
+                    <div id="githubRow" class="cr-detail-row cr-detail-split">
+                        <div>
+                            <div class="cr-detail-label">Source Repository</div>
+                            <div class="cr-detail-sublabel">Inspect theme commits and submit improvements on GitHub</div>
+                        </div>
+                        <a id="profileGithubLink" href="#" target="_blank" rel="noopener noreferrer" class="cr-btn cr-btn--outline">
+                            <span>View on GitHub</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+                                <path fill="currentColor" d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <div class="cr-detail-row cr-detail-split">
+                        <div>
+                            <div class="cr-detail-label">Install Environment</div>
+                            <div id="profileEnvStatus" class="cr-detail-sublabel">Checking Rammerhead client integration…</div>
+                        </div>
+                        <span id="profileEnvTypeChip" class="cr-code-chip"></span>
+                    </div>
+
+                    <details id="cssInspectorDetails" class="cr-detail-row cr-expandable">
+                        <summary>
+                            <div>
+                                <div class="cr-detail-label">Inspect Theme CSS</div>
+                                <div class="cr-detail-sublabel">View raw custom property rules applied by this theme</div>
+                            </div>
+                            <span class="expand-chevron" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+                                    <path fill="currentColor" d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+                                </svg>
+                            </span>
+                        </summary>
+                        <div class="css-source-box">
+                            <div class="css-source-toolbar">
+                                <span id="cssByteCount" class="css-meta-text"> stylesheet</span>
+                                <button id="copyCssSourceBtn" type="button" class="cr-btn cr-btn--outline cr-btn--sm">Copy CSS</button>
+                            </div>
+                            <pre><code id="profileCssCode">Loading stylesheet…</code></pre>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- Related / More Themes Section -->
+                <div id="relatedSection" class="related-section">
+                    <div class="related-header">
+                        <h3 id="relatedHeading">More themes to explore</h3>
+                        <a href="?" class="related-view-all" id="relatedViewAllLink">View all</a>
+                    </div>
+                    <div id="relatedGrid" class="related-grid"></div>
+                </div>
             </div>
-        </div>
-        <div id="rightContent">
-            <div id="rightSpacer">
-                <a href="https://github.com/TheRealGeoDash2019/ThemeStore">View Source</a>
+        </section>
+
+        <!-- Native Rammerhead Theme Editor View (replaces external theme_editor.html) -->
+        <section id="editorView" class="hidden" aria-labelledby="editor-heading">
+            <div class="profile-subbar">
+                <div class="profile-subbar-inner">
+                    <div class="profile-nav-left">
+                        <button id="editorBackBtn" type="button" class="cr-icon-btn back-btn"
+                            aria-label="Back to themes" title="Back to themes">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                                <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                            </svg>
+                        </button>
+                        <nav class="profile-breadcrumbs" aria-label="Editor Breadcrumb">
+                            <a id="editorBreadcrumbRootLink" href="?">Themes</a>
+                            <span class="breadcrumb-sep" aria-hidden="true">/</span>
+                            <span id="editorBreadcrumbCurrent" aria-current="page">Theme Editor</span>
+                        </nav>
+                    </div>
+                    <div class="editor-subbar-actions">
+                        <label for="editorPresetSelect" class="sr-only">Load preset or catalogue theme</label>
+                        <select id="editorPresetSelect" class="cr-select" title="Load style values from a preset or catalogue theme">
+                            <option value="default-dark">Preset: Rammerhead Default Dark</option>
+                            <option value="default-light">Preset: Clean Chromium Light</option>
+                            <option value="amoled-black">Preset: Pitch Black AMOLED</option>
+                            <optgroup id="editorCatalogueOptgroup" label="Load from Catalogue Theme"></optgroup>
+                        </select>
+                        <button id="editorInitBtn" type="button" class="cr-btn cr-btn--outline cr-btn--sm"
+                            title="Reset all style tokens to the currently selected base preset">
+                            Init Style Values
+                        </button>
+                        <button id="editorImportBtn" type="button" class="cr-btn cr-btn--outline cr-btn--sm"
+                            title="Import an existing .theme.css file from disk">
+                            Import .css
+                        </button>
+                        <input id="editorImportFile" type="file" accept=".css,text/css" class="sr-only" tabindex="-1">
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <script>
-        const searchInput = document.querySelector("#searchTerm > #searchInput");
-        const searchBar = document.querySelector("#centeredContent > #search");
-        const searchPlaceholder = document.querySelector("#searchTerm > #prompt");
-        const searchClear = document.querySelector("#content > .searchClear");
-        searchInput.addEventListener("input", function() {
-            if (searchInput.value) {
-                searchPlaceholder.classList.add("hidden");
-                searchClear.classList.remove("hidden");
-                const oldUrl = new URL(location.href);
-                oldUrl.searchParams.set("q", searchInput.value);
-                history.pushState(null, "", oldUrl);
-            } else {
-                searchPlaceholder.classList.remove("hidden");
-                searchClear.classList.add("hidden");
-                const oldUrl = new URL(location.href);
-                oldUrl.searchParams.delete("q");
-                history.pushState(null, "", oldUrl);
-            }
-        })
 
-        searchClear.addEventListener("click", function() {
-            searchInput.value = "";
-            searchInput.dispatchEvent(new Event("input"));
-            const oldUrl = new URL(location.href);
-            oldUrl.searchParams.delete("q");
-            history.pushState(null, "", oldUrl);
-        });
+            <div class="editor-container">
+                <!-- Editor Studio Header Sheet -->
+                <div id="editorHeroCard" class="cr-sheet editor-hero-card">
+                    <div class="editor-hero-left">
+                        <img id="editorThemeIcon" class="editor-theme-icon" src="" alt="" width="56" height="56">
+                        <div class="editor-hero-titles">
+                            <div class="editor-heading-row">
+                                <h2 id="editor-heading" tabindex="-1">Theme Editor</h2>
+                                <span id="editorContrastBadge" class="editor-contrast-pill" role="status" aria-live="polite">
+                                    <span id="editorContrastIcon" aria-hidden="true">✓</span>
+                                    <span id="editorContrastText">WCAG AAA</span>
+                                </span>
+                            </div>
+                            <p class="editor-hero-subtitle">
+                                Customize all 12 <code>--browser-*</code> style tokens with live Rammerhead New Tab &amp; Store previews and one-click <code>.theme.css</code> export.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="editor-hero-actions">
+                        <button id="editorApplyStoreBtn" type="button" class="cr-btn cr-btn--outline" aria-pressed="false"
+                            title="Temporarily apply these style tokens to the Theme Store UI">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                                <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                            </svg>
+                            <span id="editorApplyStoreLabel">Test on Store UI</span>
+                        </button>
+                        <button id="editorCopyCssBtn" type="button" class="cr-btn cr-btn--outline">
+                            Copy CSS
+                        </button>
+                        <button id="editorExportBtn" type="button" class="cr-btn cr-btn--filled">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="17" viewBox="0 -960 960 960" width="17" fill="currentColor" aria-hidden="true">
+                                <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
+                            </svg>
+                            <span>Export Style Values</span>
+                        </button>
+                    </div>
+                </div>
 
-        document.addEventListener("click", function() {
-            if (document.activeElement === searchInput) {
-                searchBar.classList.add("active");
-            } else {
-                searchBar.classList.remove("active");
-            }
-        })
+                <!-- Two-Column Native Editor Workspace -->
+                <div class="editor-studio-grid">
+                    <!-- Left Column: Metadata & 12 CSS Token Inspector Form -->
+                    <form id="themeEditorForm" class="cr-sheet editor-inspector-card" action="#editor" method="GET" novalidate>
+                        <fieldset class="editor-fieldset">
+                            <legend class="editor-legend">Theme Metadata</legend>
+                            <div class="editor-meta-grid">
+                                <div class="editor-field">
+                                    <label for="editorMetaName">Theme Name (<code>@name</code>)</label>
+                                    <input id="editorMetaName" name="metaName" type="text" value="Custom Theme" required>
+                                </div>
+                                <div class="editor-field">
+                                    <label for="editorMetaAuthor">Author (<code>@author</code>)</label>
+                                    <input id="editorMetaAuthor" name="metaAuthor" type="text" value="You!" required>
+                                </div>
+                                <div class="editor-field">
+                                    <label for="editorMetaVersion">Version (<code>@version</code>)</label>
+                                    <input id="editorMetaVersion" name="metaVersion" type="text" value="0.0.1"
+                                        autocorrect="off" autocapitalize="off" spellcheck="false" required>
+                                </div>
+                            </div>
+                        </fieldset>
 
-        window.addEventListener("load", function() {
-            const searchParams = new URLSearchParams(location.search);
-            if (searchParams.has("q")) {
-                searchInput.value = searchParams.get("q");
-                searchPlaceholder.classList.add("hidden");
-                searchClear.classList.remove("hidden");
-            }
-        })
-    </script>
+                        <fieldset class="editor-fieldset editor-tokens-fieldset">
+                            <legend class="editor-legend">Style Values (<code>html.custom-theme</code>)</legend>
+                            <p class="editor-fieldset-hint">
+                                Click any color swatch or edit the CSS value directly. Changes update the live preview immediately.
+                            </p>
+                            <div id="editorTokensList" class="editor-tokens-list"></div>
+                        </fieldset>
+                    </form>
+
+                    <!-- Right Column: Native Rammerhead Live Preview + Generated CSS Output -->
+                    <div class="editor-preview-stack">
+                        <div class="cr-sheet editor-simulator-card">
+                            <div class="sheet-section-header">
+                                <div>
+                                    <h3>Live Rammerhead Preview</h3>
+                                    <p class="sheet-subtitle">Native interactive rendering of Better Rammerhead tabs, address bar, and New Tab page</p>
+                                </div>
+                                <div class="preview-tab-switcher" role="tablist" aria-label="Editor preview scene">
+                                    <button type="button" role="tab" class="cr-chip active" data-editor-tab="rhnewtab" aria-selected="true">Rammerhead New Tab</button>
+                                    <button type="button" role="tab" class="cr-chip" data-editor-tab="omnibox" aria-selected="false">Omnibox Menu</button>
+                                    <button type="button" role="tab" class="cr-chip" data-editor-tab="store" aria-selected="false">Store UI</button>
+                                </div>
+                            </div>
+
+                            <!-- Native Scoped Reproduction of theme_editor.html's #preview_frame -->
+                            <div id="editorBrowserFrame" class="editor-browser-frame">
+                                <!-- Chrome Tabs Strip -->
+                                <div class="ed-chrome-tabs">
+                                    <div class="ed-chrome-tabs-content">
+                                        <!-- Active Tab -->
+                                        <button type="button" class="ed-chrome-tab active" data-editor-tab="rhnewtab">
+                                            <div class="ed-chrome-tab-background" aria-hidden="true">
+                                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 258 36" preserveAspectRatio="none">
+                                                    <path class="ed-tab-geometry" d="M17 0h224c4.5 0 8 3.5 8 8v20c0 4.5 4.5 8 9 8v2H0v-2c4.5 0 9-3.5 9-8V8c0-4.5 3.5-8 8-8z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="ed-chrome-tab-inner">
+                                                <span class="ed-chrome-tab-title">Active Tab</span>
+                                                <span class="ed-chrome-tab-close" aria-hidden="true">×</span>
+                                            </div>
+                                        </button>
+
+                                        <span class="ed-chrome-tab-divider" aria-hidden="true"></span>
+
+                                        <!-- Background Tab -->
+                                        <button type="button" class="ed-chrome-tab" data-editor-tab="store">
+                                            <div class="ed-chrome-tab-background" aria-hidden="true">
+                                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 258 36" preserveAspectRatio="none">
+                                                    <path class="ed-tab-geometry" d="M17 0h224c4.5 0 8 3.5 8 8v20c0 4.5 4.5 8 9 8v2H0v-2c4.5 0 9-3.5 9-8V8c0-4.5 3.5-8 8-8z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="ed-chrome-tab-inner">
+                                                <span class="ed-chrome-tab-title">Background Tab</span>
+                                                <span class="ed-chrome-tab-close" aria-hidden="true">×</span>
+                                            </div>
+                                        </button>
+
+                                        <span class="ed-chrome-tab-divider" aria-hidden="true"></span>
+
+                                        <!-- New Tab (+) Button -->
+                                        <span class="ed-chrome-newtab-btn" title="New tab" aria-hidden="true">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
+                                                <path d="M 21 12 h -8 v 8 h -3 v -8 H 2 v -3 h 8 V 2 h 3 v 8 h 8 Z"></path>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="ed-chrome-tabs-bottom-bar"></div>
+                                </div>
+
+                                <!-- Browser Navigation & Address Bar -->
+                                <div class="ed-browser-bar">
+                                    <span class="ed-bar-btn disabled" aria-hidden="true" title="Back">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
+                                            <path d="M 4.22 14.03 C 3.53 14.15 3 14.77 3 15.5 C 3 16.25 3.53 16.86 4.24 16.98 L 4.02 17.19 L 14.36 27.51 C 14.65 27.81 15.05 28 15.5 28 C 16.33 28 17 27.33 17 26.5 C 17 26.05 16.8 25.65 16.49 25.38 L 16.55 25.32 L 8.22 17 L 27.51 17 C 28.33 17 29 16.33 29 15.5 C 29 14.67 28.33 14 27.51 14 L 8.2 14 L 16.55 5.66 C 16.81 5.34 17 4.94 17 4.5 C 17 3.68 16.33 3 15.5 3 C 15.06 3 14.66 3.2 14.39 3.5 L 14.36 3.47 L 4 13.81 Z"/>
+                                        </svg>
+                                    </span>
+                                    <span class="ed-bar-btn disabled" aria-hidden="true" title="Forward">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
+                                            <path d="M 27.78 14.03 C 28.47 14.15 29 14.77 29 15.5 C 29 16.25 28.47 16.86 27.76 16.98 L 27.98 17.19 L 17.64 27.51 C 17.35 27.81 16.95 28 16.5 28 C 15.67 28 15 27.33 15 26.5 C 15 26.05 15.2 25.65 15.51 25.38 L 15.45 25.32 L 23.78 17 L 4.49 17 C 3.67 17 3 16.33 3 15.5 C 3 14.67 3.67 14 4.49 14 L 23.8 14 L 15.45 5.66 C 15.19 5.34 15 4.94 15 4.5 C 15 3.68 15.67 3 16.5 3 C 16.94 3 17.34 3.2 17.61 3.5 L 17.64 3.47 L 28 13.81 Z"/>
+                                        </svg>
+                                    </span>
+                                    <span class="ed-bar-btn enabled" aria-hidden="true" title="Reload">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
+                                            <path d="M 25.1 20.15 L 25.08 20.14 C 23.51 23.59 20.04 26 16 26 C 10.48 26 6 21.52 6 16 C 6 10.48 10.48 6 16 6 C 19.02 6 21.72 7.34 23.55 9.45 L 23.55 9.45 L 19 14 L 25.8 14 L 28.83 14 L 30 14 L 30 3 L 25.67 7.33 C 23.3 4.67 19.85 3 16 3 C 8.82 3 3 8.82 3 16 C 3 23.18 8.82 29 16 29 C 21.27 29 25.8 25.86 27.84 21.34 C 27.96 21.13 28.03 20.88 28.03 20.61 C 28.03 19.78 27.36 19.11 26.53 19.11 C 25.87 19.11 25.3 19.55 25.1 20.15 Z"/>
+                                        </svg>
+                                    </span>
+                                    <div class="ed-addressbar">
+                                        <span class="ed-addressbar-icon" aria-hidden="true">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20">
+                                                <path d="M 9 14 h 2 v -4 H 9 v 4 Z m 1 -12 c -4.42 0 -8 3.58 -8 8 c 0 4.42 3.58 8 8 8 c 4.42 0 8 -3.58 8 -8 c 0 -4.42 -3.58 -8 -8 -8 Z m 0 14 c -3.31 0 -6 -2.69 -6 -6 c 0 -3.31 2.69 -6 6 -6 c 3.31 0 6 2.69 6 6 c 0 3.31 -2.69 6 -6 6 Z M 9 8 h 2 V 6 H 9 v 2 Z"/>
+                                            </svg>
+                                        </span>
+                                        <span id="editorSimUrlText" class="ed-addressbar-url">rh://newtab</span>
+                                    </div>
+                                    <span class="ed-bar-btn disabled" aria-hidden="true" title="Open AB cloaked">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48">
+                                            <path d="M 38 38 H 10 V 10 h 14 V 6 H 10 c -2.21 0 -4 1.79 -4 4 v 28 c 0 2.21 1.79 4 4 4 h 28 c 2.21 0 4 -1.79 4 -4 V 24 h -4 v 14 Z M 28 6 v 4 h 7.17 L 15.51 29.66 l 2.83 2.83 L 38 12.83 V 20 h 4 V 6 H 28 Z"/>
+                                        </svg>
+                                    </span>
+                                </div>
+
+                                <!-- Scene 1: Authentic Rammerhead New Tab Page (from theme_editor.html) -->
+                                <div id="editorSceneNewtab" class="ed-rhpages ed-rhnewtab">
+                                    <!-- Omnibox Search Highlight Dropdown Preview (shown when Omnibox Menu tab is selected) -->
+                                    <div id="editorOmniboxMenu" class="ed-omnibox-menu hidden" aria-label="Omnibox suggestion preview">
+                                        <div class="ed-omnibox-item highlighted">
+                                            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                                            <span>rh://themes — Active Search Highlight (<code>--browser-search-highlight-color</code>)</span>
+                                        </div>
+                                        <div class="ed-omnibox-item">
+                                            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93z"/></svg>
+                                            <span>https://shop.rammerhead.org — Secondary Suggestion</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="ed-rhnewtab-header">
+                                        <div class="ed-stp-box">
+                                            <p class="ed-stp-top">Buy your ticket at <span class="ed-filtered-link">https://shop.rammerhead.org</span></p>
+                                            <p class="ed-stp-sub">or click <span class="ed-filtered-link">here</span> if you can't access it</p>
+                                            <hr class="ed-stp-hr">
+                                            <div class="ed-stp-title">🎟️ Speed ticket panel 🎟️</div>
+                                            <div class="ed-stp-row">Code: <span class="ed-stp-fake-input">123e4567-e89b...</span> <span class="ed-stp-fake-btn">Enter</span></div>
+                                            <div class="ed-stp-row">Dedicated speed: <strong>Off</strong></div>
+                                            <div class="ed-stp-row">VPN selection: <span class="ed-stp-fake-btn">🇺🇸 USA</span></div>
+                                        </div>
+
+                                        <div class="ed-turret-wrap" aria-hidden="true">
+                                            <svg class="ed-turret-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="128" height="128" fill="#ffdf8c">
+                                                <path d="M437-80q-24 0-42-17.5T377-140v-200H220q-24 0-42-18t-18-42v-303q0-55 39.5-96t95.5-41h505v440q0 24-18 42t-42 18H583v200q0 25-18 42.5T523-80h-86ZM220-554h520v-226h-56v171h-60v-171h-71v85h-60v-85H295q-32 0-53.5 23T220-703v149Z"/>
+                                            </svg>
+                                        </div>
+
+                                        <div class="ed-ad-slot">
+                                            <p>*Open ad slot here*</p>
+                                            <div>Contact @staff in the <span class="ed-filtered-link">Discord server</span></div>
+                                        </div>
+                                    </div>
+
+                                    <p class="ed-rhnewtab-msg">Click on the URL bar to start searching.</p>
+                                    <div class="ed-oldui-container">
+                                        <p class="ed-oldui-msg">or input your URL directly:</p>
+                                        <div class="ed-oldui-input">https://www.google.com</div>
+                                        <div class="ed-oldui-btns">
+                                            <span>Open in-browser</span>
+                                            <span>Open AB cloaked</span>
+                                            <span>Open direct</span>
+                                        </div>
+                                    </div>
+                                    <p class="ed-discord-foot">Join the <span class="ed-filtered-link">discord server</span> for help or just chill.</p>
+                                    <div class="ed-version-box">
+                                        <div><strong>Browser version: THEMING DEMO</strong></div>
+                                        <div><strong>Rammerhead version: N/A</strong></div>
+                                    </div>
+                                </div>
+
+                                <!-- Scene 2: Store UI Preview -->
+                                <div id="editorSceneStore" class="ed-rhpages ed-store-scene hidden">
+                                    <div class="ed-store-bar">
+                                        <span class="ed-store-brand">Themes</span>
+                                        <span class="ed-store-search">Search themes, authors, or styles</span>
+                                    </div>
+                                    <div class="ed-store-cards">
+                                        <div class="ed-store-card">
+                                            <span id="edMiniAvatar1" class="ed-store-avatar">C</span>
+                                            <div class="ed-store-lines">
+                                                <span id="edMiniTitle1" class="ed-store-card-title">Custom Theme</span>
+                                                <span id="edMiniAuthor1" class="ed-store-card-sub">by You!</span>
+                                            </div>
+                                        </div>
+                                        <div class="ed-store-card">
+                                            <span class="ed-store-avatar">R</span>
+                                            <div class="ed-store-lines">
+                                                <span class="ed-store-card-title">Rammerhead Dark</span>
+                                                <span class="ed-store-card-sub">by Community</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Live Generated CSS Code Sheet -->
+                        <div class="cr-sheet editor-code-card">
+                            <div class="sheet-section-header">
+                                <div>
+                                    <h3>Generated <code>.theme.css</code> Output</h3>
+                                    <p class="sheet-subtitle">Ready-to-use Better Rammerhead theme stylesheet</p>
+                                </div>
+                                <div class="cr-row-actions">
+                                    <span id="editorCssByteCount" class="css-meta-text">0 bytes</span>
+                                    <button id="editorCodeCopyBtn" type="button" class="cr-btn cr-btn--outline cr-btn--sm">Copy CSS</button>
+                                    <button id="editorCodeDownloadBtn" type="button" class="cr-btn cr-btn--tonal cr-btn--sm">Download .css</button>
+                                </div>
+                            </div>
+                            <pre class="editor-css-pre"><code id="editorCssOutput"></code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast Host -->
+    <div id="toastHost" aria-live="polite" aria-atomic="false"></div>
+
+    <!-- Card Template (follows modern-web-guidance `card` semantics) -->
+    <template id="theme-template">
+        <article class="theme-card">
+            <img class="theme-icon" alt="" src="" width="48" height="48">
+            <header class="card-header">
+                <div class="card-heading-row">
+                    <h3 class="theme-name"><a class="card-link" href="?">Theme Name</a></h3>
+                    <span class="verified-badge card-verified-badge hidden" role="img" aria-label="Verified theme" title="Verified theme">
+                        <svg width="15" height="15" aria-hidden="true" focusable="false">
+                            <use href="#ts-icon-verified"></use>
+                        </svg>
+                    </span>
+                    <span class="theme-version">0.0.0</span>
+                </div>
+                <div class="card-byline-row">
+                    <span class="theme-author"></span>
+                    <span class="card-status-pill hidden"></span>
+                </div>
+            </header>
+            <p class="theme-description"></p>
+            <footer class="card-footer">
+                <div class="card-footer-left">
+                    <a class="cr-btn cr-btn--outline details-link" href="?">
+                        Details<span class="sr-only details-sr-suffix"></span>
+                    </a>
+                    <div class="mini-palette" aria-hidden="true"></div>
+                </div>
+                <div class="card-footer-right">
+                    <button type="button" class="cr-icon-btn card-preview-btn" title="Live preview on store" aria-pressed="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                            <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                    </button>
+                    <button type="button" class="cr-btn cr-btn--tonal card-install-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor" aria-hidden="true">
+                            <path d="M320-120v-80H160q-33 0-56.5-23.5T80-280v-480q0-33 23.5-56.5T160-840h320v80H160v480h640v-120h80v120q0 33-23.5 56.5T800-200H640v80H320Zm360-280L480-600l56-56 104 103v-287h80v287l104-103 56 56-200 200Z"/>
+                        </svg>
+                        <span class="install-label">Install</span>
+                    </button>
+                </div>
+            </footer>
+        </article>
+    </template>
+
+    <!-- Rammerhead / BetterRH Sandbox & Theme Bridge (preserved for full client compatibility) -->
     <script>
         const burstSandbox = function () {
             // Rammerhead Clients usually have %hammerhead%
             console.debug("Bursting Rammerhead Sandbox");
             return Function("const Func = window[`%hammerhead%`].nativeMethods.Function; const findParent = Func(`try { return (window.top.location.href,window.top); } catch { return (window.parent.location.href,window.parent); }`); return Func(`fP`,`return fP();`)(findParent);")();
-        }
+        };
 
         let windowethToppeth;
 
@@ -142,194 +803,102 @@
         }
 
         const openExternalLink = function (url) {
-            return windowethToppeth[`open`](url);
+            return windowethToppeth ? windowethToppeth["open"](url) : window.open(url, "_blank", "noopener,noreferrer");
         };
 
         const openBrowserLink = function (url, newTab = true) {
-            if ("BetterRH" in windowethToppeth) {
+            if (windowethToppeth && "BetterRH" in windowethToppeth) {
                 return windowethToppeth.BetterRH.executeSearch(url, newTab);
             }
-        }
-        
+        };
+
         const themeSettingsPage = function (url) {
-            Array.from(document.querySelectorAll("link.user-theme")).map(e => e.remove());
+            Array.from(document.querySelectorAll("link.user-theme")).forEach(e => e.remove());
+            if (!url) return;
             const newTheme = document.createElement("link");
             newTheme.rel = "stylesheet";
             newTheme.href = url;
             newTheme.className = "user-theme";
             document.head.appendChild(newTheme);
-        }
+        };
+
+        window.openExternalLink = openExternalLink;
+        window.openBrowserLink = openBrowserLink;
+        window.themeSettingsPage = themeSettingsPage;
 
         const getQueryParams = function () {
-            return Object.fromEntries(window.location.search.slice(1).split("&").map(e => e.split("=")));
-        }
+            if (!window.location.search) return {};
+            return Object.fromEntries(new URLSearchParams(window.location.search).entries());
+        };
 
         const isTrue = function (_) {
             if (_ instanceof Array) return (_.length > 0);
             if (_ instanceof Object) return true;
             if (typeof _ === "boolean") return _;
-            return (_ === "true" || _ === "yes" || parseInt(_) >= 1 || parseInt(_) >= "1");
-        }
+            return (_ === "true" || _ === "yes" || parseInt(_) >= 1);
+        };
 
-        window.toggleTheme = function(_) {
-            if (!window["%is-hammerhead%"]) return;
-            if (!windowethToppeth) return;
+        window.__installedThemeUrl = null;
+
+        window.isRammerheadEnvironment = function () {
+            return Boolean(window["%is-hammerhead%"] && windowethToppeth && (windowethToppeth.rhTheming || windowethToppeth.toggleTheme));
+        };
+
+        window.toggleTheme = function (_) {
+            if (!window["%is-hammerhead%"]) return null;
+            if (!windowethToppeth) return null;
             try {
                 if (windowethToppeth.rhTheming) {
                     windowethToppeth.rhTheming.setEnabled(_);
                     windowethToppeth.rhTheming.setURL(_);
+                    window.__installedThemeUrl = _ || null;
+                    window.dispatchEvent(new CustomEvent("storeInstalledChange", { detail: { url: window.__installedThemeUrl } }));
                     return _;
                 } else if (windowethToppeth.toggleTheme) {
                     windowethToppeth.toggleTheme(_);
+                    window.__installedThemeUrl = _ || null;
+                    window.dispatchEvent(new CustomEvent("storeInstalledChange", { detail: { url: window.__installedThemeUrl } }));
                     return _;
                 }
-            } catch (_) {
-            return null;
+            } catch {
+                return null;
             }
+            return null;
         };
 
-        window.addEventListener("themeState", ({themeState}) => {
+        window.addEventListener("themeState", (event) => {
+            const themeState = event.themeState || event.detail?.themeState || event.detail;
             if (themeState) {
                 if (themeState.theme) {
                     if (themeState.theme.startsWith("rh://")) {
+                        window.__installedThemeUrl = null;
                         themeSettingsPage(null);
                     } else {
+                        window.__installedThemeUrl = themeState.theme;
                         themeSettingsPage(themeState.theme);
                     }
+                    window.dispatchEvent(new CustomEvent("storeInstalledChange", { detail: { url: window.__installedThemeUrl } }));
                 }
-                if (!!themeState.active) {
-                    console.log("Dark Mode: Active")
+                if (Boolean(themeState.active)) {
+                    console.log("Dark Mode: Active");
                 } else {
-                    console.log("Dark Mode: Inactive")
+                    console.log("Dark Mode: Inactive");
                 }
             }
-        })
+        });
 
         window.addEventListener("load", () => {
-            // Continue with Checking for Rammerhead
             if (!window["%is-hammerhead%"]) return;
             if (!windowethToppeth) return;
             if (windowethToppeth.location.href === "about:blank") return;
             if (!windowethToppeth.BetterRH) {
-                console.log("No Better Rammerhead!")
+                console.log("No Better Rammerhead!");
             } else {
                 windowethToppeth.dispatchEvent(new CustomEvent("requestThemeConfig"));
             }
-        })
+        });
     </script>
-    <div id="storeContent"></div>
-    <template id="theme-template">
-        <div id="card">
-            <div id="main">
-                <div id="icon-wrapper">
-                    <img id="icon" alt="Theme Icon" src="">
-                </div>
-                <div id="content">
-                    <div>
-                        <div id="name-and-version">
-                            <div id="name" role="heading">
-                                Theme Name
-                            </div>
-                            <span id="version">
-                                0.0.0
-                            </span>
-                        </div>
-                    </div>
-                    <div id="description">
-                        Script Description
-                    </div>
-                    <div id="actions">
-                        <div id="install">
-                            <svg title="Install Theme" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                                <path d="M320-120v-80H160q-33 0-56.5-23.5T80-280v-480q0-33 23.5-56.5T160-840h320v80H160v480h640v-120h80v120q0 33-23.5 56.5T800-200H640v80H320Zm360-280L480-600l56-56 104 103v-287h80v287l104-103 56 56-200 200Z"/>
-                            </svg>
-                            Install Theme
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </template>
-    <script>     
-        function getSafeTextColor(input = "#000000") {
-            return ("#" + tinycolor.mostReadable(input, ["#fff", "#000"], { wcag2: {} }).toHex());
-        }
-    
-        function generateTextIcon(initial, accent = "#ffdf8c") {
-            const canvas = document.createElement(`canvas`);
-            canvas.width = 96;
-            canvas.height = 96;
-            const ctx = canvas.getContext("2d");
-            ctx.fillStyle = accent;
-            ctx.roundRect(0, 0, 96, 96, 10);
-            ctx.fill();
-            ctx.fillStyle = getSafeTextColor(accent);
-            ctx.font = "40px sans-serif";
-            const text = initial;
-            const textWidth = ctx.measureText(text);
-            ctx.fillText(text, (canvas.width/2) - (textWidth.width/2), canvas.height / 2 + (textWidth.actualBoundingBoxAscent - textWidth.actualBoundingBoxDescent) / 2);
-            return canvas.toDataURL("png");
-        }
-
-        function makeThemeCard(name = "Unnamed Theme", description, version = "Unknown", icon, metadata = {}) {
-            const cardElement = document.querySelector(`template#theme-template`).content.cloneNode(true);
-            const cardIcon = cardElement.querySelector(`#icon-wrapper > #icon[src]`);
-            const cardName = cardElement.querySelector(`#name-and-version > #name`);
-            const cardVersion = cardElement.querySelector(`#name-and-version > #version`);
-            const cardDescription = cardElement.querySelector(`#content > #description`);
-            const cardInstall = cardElement.querySelector(`#content > #actions > #install`);
-        
-            cardName.innerText = name;
-            cardVersion.innerText = version;
-            if (description) {
-                cardDescription.innerText = description;
-            };
-            if (icon) {
-                cardIcon.src = icon;
-            } else {
-                cardIcon.src = generateTextIcon(name.split("").find(e => e.match(/[a-z0-9]/gmi)), metadata?.accent);
-            };
-            cardInstall.addEventListener("click", async function() {
-                console.log("Installing:", metadata?.src);
-                window.toggleTheme(metadata?.src);
-            })
-            return cardElement;
-        }
-    </script>
-    <script>
-        window.addEventListener("load", async function() {
-            Array.from(document.querySelector(`#storeContent`).childNodes).forEach(e => e.remove());
-            // Fetch the Theme catalogue.
-            window.themeList = await fetch(`https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/_index.json`).then(resp => resp.json().then(x => x.Themes).catch(() => [])).catch(() => []);
-            for (const theme of window.themeList) {
-                document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, theme?.icon, {
-                    src: theme?.url,
-                    accent: theme?.accent
-                }))
-            }
-
-            searchInput.addEventListener("input", function() {
-                Array.from(document.querySelector(`#storeContent`).childNodes).forEach(e => e.remove());
-                const searchQuery = searchInput.value;
-                if (!searchQuery) {
-                    for (const theme of window.themeList) {
-                        document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, theme?.icon, {
-                            src: theme?.url,
-                            accent: theme?.accent
-                        }))
-                    }
-                } else {
-                    const filteredThemes = window.themeList.filter(e => ((e?.name?.includes?.(searchQuery) || e?.description?.includes?.(searchQuery) || e?.author?.includes?.(searchQuery)) || (e?.name?.toLowerCase?.().includes?.(searchQuery.toLowerCase()) || e?.description?.toLowerCase?.().includes?.(searchQuery.toLowerCase()) || e?.author?.toLowerCase?.().includes?.(searchQuery.toLowerCase()))));
-                    for (const theme of filteredThemes) {
-                        document.querySelector(`#storeContent`).appendChild(makeThemeCard(theme?.name, theme?.description, theme?.version, theme?.icon, {
-                            src: theme?.url,
-                            accent: theme?.accent
-                        }))
-                    }
-                }
-            });
-        })
-    </script>
+    <script src="./assets/store.js"></script>
 </body>
 
 </html>
