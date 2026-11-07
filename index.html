@@ -802,6 +802,20 @@
             if (window["%hammerhead%"]) console.warn("Rammerhead Sandbox Breakout failed");
         }
 
+        if (!windowethToppeth) {
+            try {
+                if (window.top && window.top.rhSession) {
+                    windowethToppeth = window.top;
+                } else if (window.parent && window.parent.rhSession) {
+                    windowethToppeth = window.parent;
+                } else if (window.rhSession) {
+                    windowethToppeth = window;
+                }
+            } catch {
+                // Cross-origin frame without %hammerhead%
+            }
+        }
+
         const openExternalLink = function (url) {
             return windowethToppeth ? windowethToppeth["open"](url) : window.open(url, "_blank", "noopener,noreferrer");
         };
@@ -838,27 +852,134 @@
             return (_ === "true" || _ === "yes" || parseInt(_) >= 1);
         };
 
-        window.__installedThemeUrl = null;
-
-        window.isRammerheadEnvironment = function () {
-            return Boolean(window["%is-hammerhead%"] && windowethToppeth && (windowethToppeth.rhTheming || windowethToppeth.toggleTheme));
+        const RH_BUILTIN_THEME_URLS = {
+            "amoled": "https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/AMOLED.theme.css",
+            "crime-scene": "https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/CrimeScene.theme.css",
+            "spotified": "https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/Spotified.theme.css",
+            "where-are-the-lights": "https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/WhereAreTheLights.theme.css",
+            "purple-overflow": "https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/PurpleOverflow.theme.css",
+            "dark": "https://cdn.jsdelivr.net/gh/TheRealGeoDash2019/Rammerhead-Patches@latest/Themes/ThemeTemplate.css"
         };
 
-        window.toggleTheme = function (_) {
-            if (!window["%is-hammerhead%"]) return null;
+        const RH_BUILTIN_IDS = new Set([
+            "system",
+            "dark",
+            "light",
+            "crime-scene",
+            "spotified",
+            "where-are-the-lights",
+            "purple-overflow",
+            "amoled"
+        ]);
+
+        const resolveThemeToRhId = function (input, slugHint) {
+            if (slugHint && RH_BUILTIN_IDS.has(slugHint)) return slugHint;
+            if (!input) return null;
+            const trimmed = String(input).trim();
+            if (RH_BUILTIN_IDS.has(trimmed)) return trimmed;
+
+            if (/\/AMOLED\.theme\.css(\?.*)?$/i.test(trimmed)) return "amoled";
+            if (/\/CrimeScene\.theme\.css(\?.*)?$/i.test(trimmed)) return "crime-scene";
+            if (/\/Spotified\.theme\.css(\?.*)?$/i.test(trimmed)) return "spotified";
+            if (/\/(WhereAreTheLights|AMOLED_v2)\.theme\.css(\?.*)?$/i.test(trimmed)) return "where-are-the-lights";
+            if (/\/PurpleOverflow\.theme\.css(\?.*)?$/i.test(trimmed)) return "purple-overflow";
+            if (/\/ThemeTemplate(\.theme)?\.css(\?.*)?$/i.test(trimmed)) return "dark";
+
+            return trimmed;
+        };
+
+        const resolveRhIdToCssUrl = function (rhValue) {
+            if (!rhValue) return null;
+            const trimmed = String(rhValue).trim();
+            if (trimmed === "system" || trimmed === "light" || trimmed.startsWith("rh://")) return null;
+            if (Object.prototype.hasOwnProperty.call(RH_BUILTIN_THEME_URLS, trimmed)) {
+                return RH_BUILTIN_THEME_URLS[trimmed];
+            }
+            if (/^https?:\/\//i.test(trimmed) || trimmed.endsWith(".css")) {
+                return trimmed;
+            }
+            return null;
+        };
+
+        window.resolveThemeToRhId = resolveThemeToRhId;
+        window.resolveRhIdToCssUrl = resolveRhIdToCssUrl;
+
+        window.__installedThemeUrl = null;
+        window.__installedThemeId = null;
+
+        window.isRammerheadEnvironment = function () {
+            return Boolean(
+                windowethToppeth && (
+                    (windowethToppeth.rhSession && typeof windowethToppeth.rhSession.setTabTheme === "function") ||
+                    (window["%is-hammerhead%"] && (windowethToppeth.rhTheming || windowethToppeth.toggleTheme))
+                )
+            );
+        };
+
+        window.getInstalledTabTheme = function () {
+            if (windowethToppeth && windowethToppeth.rhSession && typeof windowethToppeth.rhSession.getTabTheme === "function") {
+                try {
+                    return windowethToppeth.rhSession.getTabTheme();
+                } catch {
+                    return window.__installedThemeId;
+                }
+            }
+            return window.__installedThemeId || window.__installedThemeUrl;
+        };
+
+        const syncThemeFromRhSession = function () {
+            if (!windowethToppeth || !windowethToppeth.rhSession || typeof windowethToppeth.rhSession.getTabTheme !== "function") {
+                return false;
+            }
+            try {
+                const currentTheme = windowethToppeth.rhSession.getTabTheme();
+                window.__installedThemeId = resolveThemeToRhId(currentTheme);
+                window.__installedThemeUrl = resolveRhIdToCssUrl(currentTheme);
+                themeSettingsPage(window.__installedThemeId === "dark" ? null : window.__installedThemeUrl);
+                window.dispatchEvent(new CustomEvent("storeInstalledChange", {
+                    detail: { url: window.__installedThemeUrl, id: window.__installedThemeId }
+                }));
+                return true;
+            } catch {
+                return false;
+            }
+        };
+
+        window.syncThemeFromRhSession = syncThemeFromRhSession;
+
+        window.toggleTheme = function (_, slugHint) {
             if (!windowethToppeth) return null;
             try {
+                const rhThemeArg = resolveThemeToRhId(_, slugHint);
+                if (windowethToppeth.rhSession && typeof windowethToppeth.rhSession.setTabTheme === "function") {
+                    windowethToppeth.rhSession.setTabTheme(rhThemeArg || "system");
+                    window.__installedThemeId = rhThemeArg || "system";
+                    window.__installedThemeUrl = resolveRhIdToCssUrl(window.__installedThemeId);
+                    themeSettingsPage(window.__installedThemeId === "dark" ? null : window.__installedThemeUrl);
+                    window.dispatchEvent(new CustomEvent("storeInstalledChange", {
+                        detail: { url: window.__installedThemeUrl, id: window.__installedThemeId }
+                    }));
+                    return window.__installedThemeId;
+                }
+                if (!window["%is-hammerhead%"]) return null;
+                const cssUrl = resolveRhIdToCssUrl(rhThemeArg) || _;
                 if (windowethToppeth.rhTheming) {
-                    windowethToppeth.rhTheming.setEnabled(_);
-                    windowethToppeth.rhTheming.setURL(_);
-                    window.__installedThemeUrl = _ || null;
-                    window.dispatchEvent(new CustomEvent("storeInstalledChange", { detail: { url: window.__installedThemeUrl } }));
-                    return _;
+                    windowethToppeth.rhTheming.setEnabled(cssUrl);
+                    windowethToppeth.rhTheming.setURL(cssUrl);
+                    window.__installedThemeId = rhThemeArg || null;
+                    window.__installedThemeUrl = cssUrl || null;
+                    window.dispatchEvent(new CustomEvent("storeInstalledChange", {
+                        detail: { url: window.__installedThemeUrl, id: window.__installedThemeId }
+                    }));
+                    return cssUrl;
                 } else if (windowethToppeth.toggleTheme) {
-                    windowethToppeth.toggleTheme(_);
-                    window.__installedThemeUrl = _ || null;
-                    window.dispatchEvent(new CustomEvent("storeInstalledChange", { detail: { url: window.__installedThemeUrl } }));
-                    return _;
+                    windowethToppeth.toggleTheme(cssUrl);
+                    window.__installedThemeId = rhThemeArg || null;
+                    window.__installedThemeUrl = cssUrl || null;
+                    window.dispatchEvent(new CustomEvent("storeInstalledChange", {
+                        detail: { url: window.__installedThemeUrl, id: window.__installedThemeId }
+                    }));
+                    return cssUrl;
                 }
             } catch {
                 return null;
@@ -870,14 +991,12 @@
             const themeState = event.themeState || event.detail?.themeState || event.detail;
             if (themeState) {
                 if (themeState.theme) {
-                    if (themeState.theme.startsWith("rh://")) {
-                        window.__installedThemeUrl = null;
-                        themeSettingsPage(null);
-                    } else {
-                        window.__installedThemeUrl = themeState.theme;
-                        themeSettingsPage(themeState.theme);
-                    }
-                    window.dispatchEvent(new CustomEvent("storeInstalledChange", { detail: { url: window.__installedThemeUrl } }));
+                    window.__installedThemeId = resolveThemeToRhId(themeState.theme);
+                    window.__installedThemeUrl = resolveRhIdToCssUrl(themeState.theme);
+                    themeSettingsPage(window.__installedThemeId === "dark" ? null : window.__installedThemeUrl);
+                    window.dispatchEvent(new CustomEvent("storeInstalledChange", {
+                        detail: { url: window.__installedThemeUrl, id: window.__installedThemeId }
+                    }));
                 }
                 if (Boolean(themeState.active)) {
                     console.log("Dark Mode: Active");
@@ -887,14 +1006,18 @@
             }
         });
 
+        // Attempt immediate sync if rhSession is already ready on windowethToppeth
+        syncThemeFromRhSession();
+
         window.addEventListener("load", () => {
+            if (syncThemeFromRhSession()) return;
             if (!window["%is-hammerhead%"]) return;
             if (!windowethToppeth) return;
             if (windowethToppeth.location.href === "about:blank") return;
-            if (!windowethToppeth.BetterRH) {
-                console.log("No Better Rammerhead!");
+            if (!windowethToppeth.rhSession) {
+                console.log("No Rammerhead!");
             } else {
-                windowethToppeth.dispatchEvent(new CustomEvent("requestThemeConfig"));
+                // windowethToppeth.dispatchEvent(new CustomEvent("requestThemeConfig"));
             }
         });
     </script>

@@ -494,7 +494,17 @@
     // =========================================================================
 
     function isThemeInstalled(theme) {
-        return Boolean(theme?.url && window.__installedThemeUrl && window.__installedThemeUrl === theme.url);
+        if (!theme) return false;
+        if (theme.url && window.__installedThemeUrl && window.__installedThemeUrl === theme.url) {
+            return true;
+        }
+        if (window.__installedThemeId) {
+            const themeRhId = theme.rhId || window.resolveThemeToRhId?.(theme.url, theme.slug);
+            if (themeRhId && window.__installedThemeId === themeRhId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     function isThemePreviewing(theme) {
@@ -576,9 +586,10 @@
 
         if (window.isRammerheadEnvironment?.()) {
             previewThemeUrl = null;
+            isEditorStorePreviewActive = false;
+            applyEditorStoreLiveStyle();
             updatePreviewBanner();
-            window.toggleTheme(theme.url);
-            window.themeSettingsPage?.(theme.url);
+            window.toggleTheme(theme.url, theme.rhId || theme.slug);
             syncAllActionStates();
             showToast(`Installed "${theme.name}"`);
             return;
@@ -1888,9 +1899,11 @@
             const icon = item?.icon || generateTextIcon(initialMatch, accent);
             const description = item?.description || synthesizeDescription(name, author, accent);
             const slug = slugify(name, usedSlugs);
+            const rhId = window.resolveThemeToRhId ? window.resolveThemeToRhId(url, slug) : url;
 
             const themeObj = {
                 slug,
+                rhId,
                 name,
                 author,
                 version,
@@ -1911,6 +1924,7 @@
         }
 
         window.themeList = themes;
+        window.syncThemeFromRhSession?.();
         populateEditorCataloguePresets();
         buildEditorTokenControls();
         updateEditorLiveState();
