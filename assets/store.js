@@ -1924,7 +1924,7 @@
         }
 
         window.themeList = themes;
-        window.syncThemeFromRhSession?.();
+        await window.syncThemeFromRhSession?.();
         populateEditorCataloguePresets();
         buildEditorTokenControls();
         updateEditorLiveState();

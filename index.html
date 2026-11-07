@@ -901,10 +901,10 @@
             );
         };
 
-        window.getInstalledTabTheme = function () {
+        window.getInstalledTabTheme = async function () {
             if (windowethToppeth && windowethToppeth.rhSession && typeof windowethToppeth.rhSession.getTabTheme === "function") {
                 try {
-                    return windowethToppeth.rhSession.getTabTheme();
+                    return await windowethToppeth.rhSession.getTabTheme();
                 } catch {
                     return window.__installedThemeId;
                 }
@@ -912,12 +912,12 @@
             return window.__installedThemeId || window.__installedThemeUrl;
         };
 
-        const syncThemeFromRhSession = function () {
+        const syncThemeFromRhSession = async function () {
             if (!windowethToppeth || !windowethToppeth.rhSession || typeof windowethToppeth.rhSession.getTabTheme !== "function") {
                 return false;
             }
             try {
-                const currentTheme = windowethToppeth.rhSession.getTabTheme();
+                const currentTheme = await windowethToppeth.rhSession.getTabTheme();
                 window.__installedThemeId = resolveThemeToRhId(currentTheme);
                 window.__installedThemeUrl = resolveRhIdToCssUrl(currentTheme);
                 themeSettingsPage(window.__installedThemeId === "dark" ? null : window.__installedThemeUrl);
@@ -994,8 +994,8 @@
         // Attempt immediate sync if rhSession is already ready on windowethToppeth
         syncThemeFromRhSession();
 
-        window.addEventListener("load", () => {
-            if (syncThemeFromRhSession()) return;
+        window.addEventListener("load", async () => {
+            if (await syncThemeFromRhSession()) return;
             if (!window["%is-hammerhead%"]) return;
             if (!windowethToppeth) return;
             if (windowethToppeth.location.href === "about:blank") return;
