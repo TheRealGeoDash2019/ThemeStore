@@ -200,8 +200,6 @@
     const downloadCssBtn = document.getElementById("downloadCssBtn");
     const githubRow = document.getElementById("githubRow");
     const profileGithubLink = document.getElementById("profileGithubLink");
-    const profileEnvStatus = document.getElementById("profileEnvStatus");
-    const profileEnvTypeChip = document.getElementById("profileEnvTypeChip");
     const cssByteCount = document.getElementById("cssByteCount");
     const copyCssSourceBtn = document.getElementById("copyCssSourceBtn");
     const profileCssCode = document.getElementById("profileCssCode");
@@ -839,7 +837,6 @@
         const rawFilter = t["--browser-logo-filter"];
         const cleanFilter = (!rawFilter || rawFilter === '""' || rawFilter === "''") ? "none" : rawFilter;
         browserMockup.style.setProperty("--p-logo-filter", cleanFilter);
-        profileEnvTypeChip.textContent = `Unknown Environment`;
     }
 
     function renderPaletteSwatches(theme) {
@@ -926,11 +923,6 @@
 
         profileInstallBtn.classList.toggle("is-installed", installed);
         profileInstallBtnLabel.textContent = installed ? "Installed" : "Install Theme";
-
-        const inRh = Boolean(window.isRammerheadEnvironment?.());
-        profileEnvStatus.textContent = inRh
-            ? "Connected to Better Rammerhead — one-click theme installation active."
-            : "Browsing on the web — use Try Preview to test live, or open inside Better Rammerhead to install directly.";
     }
 
     function populateProfileView(theme) {
