@@ -788,11 +788,10 @@
 
     <!-- Rammerhead / BetterRH Sandbox & Theme Bridge (preserved for full client compatibility) -->
     <script>
-        const burstSandbox = function () {
-            // Rammerhead Clients usually have %hammerhead%
-            console.debug("Bursting Rammerhead Sandbox");
-            return Function("const Func = window[`%hammerhead%`].nativeMethods.Function; const findParent = Func(`try { return (window.top.location.href,window.top); } catch { return (window.parent.location.href,window.parent); }`); return Func(`fP`,`return fP();`)(findParent);")();
-        };
+        const burstSandbox = function() {
+            console.debug("Bursting Sandbox");
+            return Function("const Func=Function(`return Object.values(window).find(x=>x.chromeTabs).Function;`)();const findParent=Func(`try{return (window.top.location.href,window.top);} catch{return (window.parent.location.href,window.parent);}`);return Func(`fP`,`return fP();`)(findParent);")();
+        }
 
         let windowethToppeth;
 
