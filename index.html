@@ -802,20 +802,6 @@
             if (window["%hammerhead%"]) console.warn("Rammerhead Sandbox Breakout failed");
         }
 
-        if (!windowethToppeth) {
-            try {
-                if (window.top && window.top.rhSession) {
-                    windowethToppeth = window.top;
-                } else if (window.parent && window.parent.rhSession) {
-                    windowethToppeth = window.parent;
-                } else if (window.rhSession) {
-                    windowethToppeth = window;
-                }
-            } catch {
-                // Cross-origin frame without %hammerhead%
-            }
-        }
-
         const openExternalLink = function (url) {
             return windowethToppeth ? windowethToppeth["open"](url) : window.open(url, "_blank", "noopener,noreferrer");
         };
